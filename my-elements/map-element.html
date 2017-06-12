@@ -1,0 +1,90 @@
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/google-map/google-map-poly.html">
+<link rel="import" href="../bower_components/google-map/google-map-point.html">
+<link rel="import" href="../bower_components/geo-location/geo-location.html">
+
+<dom-module id="map-element">
+  <template >
+    <style>
+      google-map{
+        height: 90%;
+        }
+      paper-card{
+        top:10px;
+        left:10px;
+        }
+    </style>
+  <!-- <h1>hello world</h1> -->
+    <geo-location watch-pos high-accuracy latitude="{{lat}}" longitude="{{long}}" on-geo-response="_onGeoResponse">
+    </geo-location>
+
+    <google-map map="{{mymap}}" id="mymapid"  latitude="[[lat]]" longitude="[[long]]"
+    api-key="AIzaSyB8YtSJMz0LWiV3un9QXxXbbRp1sKDQg74" fit-to-marker  zoom="8" draggable="true" >
+          <google-map-marker latitude="{{lat_marker}}" longitude="{{long_marker}}"
+            title="You are here" draggable="true">
+          </google-map-marker>
+
+
+
+          <!--<google-map-poly closed fill-color="blue" fill-opacity=".3" >
+            <google-map-point latitude="[[_sub(lat,0.05)]]" longitude="[[_add(long,0.07)]]"></google-map-point>
+            <google-map-point latitude="[[_add(lat,0.05)]]" longitude="[[_add(long,0.07)]]"></google-map-point>
+            <google-map-point latitude="[[_add(lat,0.05)]]" longitude="[[_sub(long,0.03)]]"></google-map-point>
+            <google-map-point latitude="[[_sub(lat,0.05)]]" longitude="[[_sub(long,0.03)]]"></google-map-point>
+          </google-map-poly>-->
+    </google-map>
+    <paper-card elevation="2">
+      current-latitude:{{lat}}   changed-latitude:{{lat_marker}}
+      <br>current-longitude:{{long}}  changed-longitude:{{long_marker}}
+    </paper-card>
+
+  </template>
+
+
+<script>
+  Polymer({
+    is:"map-element",
+    properties: {
+      lat: {
+        type:Number,
+        value:17.38
+      },
+      long: {
+        type:Number,
+        value:78.48
+      },
+      accuracy: {
+        type:Number,
+        value: 0
+      },
+      lat_marker: {
+        type:Number,
+        value:0,
+
+      },
+      long_marker: {
+        type:Number,
+        value:0
+      }
+    },
+
+    _onGeoResponse: function(p)
+    {
+        console.log(">> GeoLocation: ", p.detail);
+        this.lat=p.detail.position.coords.latitude;
+        this.long=p.detail.position.coords.longitude;
+        this.accuracy=p.detail.position.coords.accuracy;
+
+        if (this.lat_marker === 0 && this.long_marker === 0)
+        {
+          this.lat_marker = this.lat;
+          this.long_marker = this.long;
+        }
+    }
+});
+</script>
+
+</dom-module>
